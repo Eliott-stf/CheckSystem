@@ -5,20 +5,20 @@ from .monitoring import (
     dashboard_command,
     disk_space_command,
     health_command,
-    ram__command,
+    ram_command,
     system_info_command,
     uptime_command
 )
 
 from .network import network_command, ping_command, ports_command
-from .process import kill_command, processes_command, services_command
+from .process import kill_command, process_command, services_command
 
 STATIC_COMMAND = {
     "cpu": cpu_command,
-    "ram": ram__command,
+    "ram": ram_command,
     "espace": disk_space_command,
     "uptime": uptime_command,
-    "processus": processes_command,
+    "processus": process_command,
     "network": network_command,
     "temp": temperature_command,
     "users": users_command,
