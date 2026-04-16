@@ -1,61 +1,211 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Check System</title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>"
+    />
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="title-section">
-                    <h1>Check System </h1>
-                    <p class="subtitle">Monitoring et Administration Système</p>
-                </div> 
-                <div class="quick-stats" id="quick-start">
-                    <div class="stat-item">
-                        <span class="stat-icon">⚙️</span>
-                        <span class="stat-value" id="cpuQuick">--</span>
-                        <span class="stat-label">CPU</span>                    
-                    </div>  
-
-                    <div class="stat-item">
-                        <span class="stat-icon">🧠</span>
-                        <span class="stat-value" id="ramQuick">--</span>
-                        <span class="stat-label">RAM</span>                    
-                    </div>  
-
-                    <div class="stat-item">
-                        <span class="stat-icon">💾</span>
-                        <span class="stat-value" id="diskQuick">--</span>
-                        <span class="stat-label">Disque</span>                    
-                    </div>     
-                </div>           
+      <!-- header avec stats en temps réel -->
+      <header>
+        <div class="header-content">
+          <div class="title-section">
+            <h1>🤖 Check System</h1>
+            <p class="subtitle">Monitoring et Administration Système</p>
+          </div>
+          <div class="quick-stats" id="quickStats">
+            <div class="stat-item">
+              <span class="stat-icon">⚙️</span>
+              <span class="stat-value" id="cpuQuick">--</span>
+              <span class="stat-label">CPU</span>
             </div>
-        </header>    
+            <div class="stat-item">
+              <span class="stat-icon">🧠</span>
+              <span class="stat-value" id="ramQuick">--</span>
+              <span class="stat-label">RAM</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">💾</span>
+              <span class="stat-value" id="diskQuick">--</span>
+              <span class="stat-label">Disque</span>
+            </div>
+          </div>
+        </div>
+      </header>
+      <!-- Mode toggle -->
+      <div class="view-toggle">
+        <button
+          class="toggle-btn active"
+          onclick="switchView('commands')"
+          id="btnCommands"
+        >
+          ⌨️ Commandes
+        </button>
+        <button class="toggle-btn" onclick="switchView('live')" id="btnLive">
+          📊 Monitoring Live
+        </button>
+      </div>
 
-        <div class="view-toggle">
-            <button class="toggle-btn active" onclick="switchView('commands')" id="btnCommands">⌨️ Commandes</button>
-            <button class="toggle-btn" onclick="switchView('live')" id="btnLive">📊 Monitoring Live</button>
+      <!-- Vue Monitoring live -->
+      <div id="liveView" style="display: none">
+        <h2>Live</h2>
+      </div>
+
+      <!-- Vue Commande -->
+      <div id="commandsView">
+        <!-- Filtre de catégories -->
+        <div class="filter-bar">
+          <button
+            class="filter-btn active"
+            onclick="filterCommands('all', this)"
+          >
+            Toutes
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterCommands('monitoring', this)"
+          >
+            📊 Monitoring
+          </button>
+          <button class="filter-btn" onclick="filterCommands('network', this)">
+            🌐 Réseau
+          </button>
+          <button class="filter-btn" onclick="filterCommands('process', this)">
+            🔄 Processus
+          </button>
+          <button class="filter-btn" onclick="filterCommands('security', this)">
+            🔒 Sécurité
+          </button>
+          <button
+            class="filter-btn"
+            onclick="filterCommands('diagnostic', this)"
+          >
+            🔍 Diagnostic
+          </button>
         </div>
 
-        <dix id="liveView" style="display: none">
-            <h2>Live</h2>
-        </dix>
-
-        <dix id="commandsView">
-            <h2>Commands</h2>
-        </dix>        
-
+        <!-- commande organisées par catégory -->
+        <div class="command-card">
+          <div class="card-title">
+            <span>📋 Commandes Rapides</span>
+            <button class="btn-secondary" onclick="toggleCommandList()">
+              <span id="toggleIcon">▼</span>
+            </button>
+          </div>
+          <div class="commands-grid" id="commandsGrid">
+            <!-- Monitoring -->
+            <div
+              class="command-item"
+              data-category="monitoring"
+              onclick="executeCommand('cpu')"
+            >
+              <span class="cmd-name">⚙️ cpu</span>
+              <span class="cmd-desc">Utilisation détaillée CPU</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="monitoring"
+              onclick="executeCommand('ram')"
+            >
+              <span class="cmd-name">🧠 ram</span>
+              <span class="cmd-desc">Mémoire RAM complète</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="monitoring"
+              onclick="executeCommand('espace')"
+            >
+              <span class="cmd-name">💾 espace</span>
+              <span class="cmd-desc">Utilisation des disques</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="monitoring"
+              onclick="executeCommand('dashboard')"
+            >
+              <span class="cmd-name">📊 dashboard</span>
+              <span class="cmd-desc">Vue d'ensemble système</span>
+            </div>
+          </div>
+        </div>
+        <!-- console avec historique-->
+        <div class="command-card">
+          <div class="card-title">
+            <span>⌨️ Console de commande</span>
+            <div class="console-actions">
+              <button
+                class="btn-icon"
+                onclick="clearHistory()"
+                title="Effacer l'historique"
+              >
+                🗑️
+              </button>
+              <button
+                class="btn-icon"
+                onclick="exportResults()"
+                title="Exporter les résultats"
+              >
+                💾
+              </button>
+              <button
+                class="btn-icon"
+                onclick="copyLastResult()"
+                title="Copier le dernier résultat"
+              >
+                📋
+              </button>
+            </div>
+          </div>
+          <form method="post" id="commandForm">
+            <div class="input-wrapper">
+              <input
+                type="text"
+                name="cmd"
+                id="cmdInput"
+                placeholder="Tapez une commande ou utilisez les boutons ci-dessus..."
+                value="{{ command }}"
+                autocomplete="off"
+                list="commandHistory"
+              />
+              <datalist id="commandHistory"></datalist>
+            </div>
+            <button type="submit" id="executeBtn">
+              <span id="btnText">Exécuter</span>
+              <span class="shortcut">Ctrl+↵</span>
+            </button>
+          </form>
+          <div class="command-hinds" id="hinds"></div>
+        </div>
+        <!-- Résultat avec timing -->
+        {% if result %}
+          <div class="result-card" id="resultCard">
+            <div class="result-header">
+              <div class="result-title-group">
+                <span class="result-title">📟 {{ command|upper }}</span>
+                <span class="execution-time" id="execTime" ></span>
+              </div>
+              <div class="result-actions">
+                <button class="btn-icon" onclick="copyResult()" title="Copiez" >📋</button>
+                <button class="btn-icon" onclick="downloadResult()" title="Téléchargez" >💾</button>
+                <span class="status-indicator"></span>
+              </div>
+            </div>
+            <pre id="resultContent">{{ result }}</pre>
+          </div>
+        {% endif %}
+      </div>
     </div>
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static',filename='js/app.js') }}"></script> 
-
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
 </html>
