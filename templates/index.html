@@ -135,6 +135,129 @@
               <span class="cmd-name">📊 dashboard</span>
               <span class="cmd-desc">Vue d'ensemble système</span>
             </div>
+            <!-- Réseau -->
+            <div
+              class="command-item"
+              data-category="network"
+              onclick="fillPingCommand()"
+            >
+              <span class="cmd-name">📡 ping</span>
+              <span class="cmd-desc">Test connectivité réseau</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="network"
+              onclick="executeCommand('network')"
+            >
+              <span class="cmd-name">🌐 network</span>
+              <span class="cmd-desc">Infos & stats réseau</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="network"
+              onclick="executeCommand('ports')"
+            >
+              <span class="cmd-name">🔌 ports</span>
+              <span class="cmd-desc">Ports TCP/UDP actifs</span>
+            </div>
+            <!-- Processus -->
+             <div
+              class="command-item"
+              data-category="process"
+              onclick="executeCommand('processus')"
+            >
+              <span class="cmd-name">🔄 processus</span>
+              <span class="cmd-desc">Top 10 processus</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="process"
+              onclick="executeCommand('services')"
+            >
+              <span class="cmd-name">⚡ services</span>
+              <span class="cmd-desc">Services système actifs</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="process"
+              onclick="fillKillCommand()"
+            >
+              <span class="cmd-name">❌ kill</span>
+              <span class="cmd-desc">Arrêter un processus</span>
+            </div>
+            <!-- Sécurité -->
+             <div
+              class="command-item"
+              data-category="security"
+              onclick="executeCommand('users')"
+            >
+              <span class="cmd-name">👥 users</span>
+              <span class="cmd-desc">Utilisateurs connectés</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="security"
+              onclick="executeCommand('security')"
+            >
+              <span class="cmd-name">🔒 security</span>
+              <span class="cmd-desc">Audit de sécurité</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="security"
+              onclick="executeCommand('logs')"
+            >
+              <span class="cmd-name">📜 logs</span>
+              <span class="cmd-desc">Derniers logs système</span>
+            </div>
+            <!-- diagnostic -->
+             <div
+              class="command-item"
+              data-category="diagnostic"
+              onclick="executeCommand('sysinfo')"
+            >
+              <span class="cmd-name">💻 sysinfo</span>
+              <span class="cmd-desc">Informations système</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="diagnostic"
+              onclick="executeCommand('uptime')"
+            >
+              <span class="cmd-name">🕰️ uptime</span>
+              <span class="cmd-desc">Durée d'activité</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="diagnostic"
+              onclick="executeCommand('temp')"
+            >
+              <span class="cmd-name">🌡️ temp</span>
+              <span class="cmd-desc">Températures</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="diagnostic"
+              onclick="executeCommand('battery')"
+            >
+              <span class="cmd-name">🔋 battery</span>
+              <span class="cmd-desc">Etat batterie</span>
+            </div>
+            <div
+              class="command-item"
+              data-category="diagnostic"
+              onclick="executeCommand('health')"
+            >
+              <span class="cmd-name">❤️ health</span>
+              <span class="cmd-desc">Santé système globale</span>
+            </div>
+            <div
+              class="command-item"
+              onclick="executeCommand('help')"
+            >
+              <span class="cmd-name">❓ help</span>
+              <span class="cmd-desc">Aide & Documentation</span>
+            </div>
           </div>
         </div>
         <!-- console avec historique-->
@@ -187,20 +310,28 @@
         </div>
         <!-- Résultat avec timing -->
         {% if result %}
-          <div class="result-card" id="resultCard">
-            <div class="result-header">
-              <div class="result-title-group">
-                <span class="result-title">📟 {{ command|upper }}</span>
-                <span class="execution-time" id="execTime" ></span>
-              </div>
-              <div class="result-actions">
-                <button class="btn-icon" onclick="copyResult()" title="Copiez" >📋</button>
-                <button class="btn-icon" onclick="downloadResult()" title="Téléchargez" >💾</button>
-                <span class="status-indicator"></span>
-              </div>
+        <div class="result-card" id="resultCard">
+          <div class="result-header">
+            <div class="result-title-group">
+              <span class="result-title">📟 {{ command|upper }}</span>
+              <span class="execution-time" id="execTime"></span>
             </div>
-            <pre id="resultContent">{{ result }}</pre>
+            <div class="result-actions">
+              <button class="btn-icon" onclick="copyResult()" title="Copiez">
+                📋
+              </button>
+              <button
+                class="btn-icon"
+                onclick="downloadResult()"
+                title="Téléchargez"
+              >
+                💾
+              </button>
+              <span class="status-indicator"></span>
+            </div>
           </div>
+          <pre id="resultContent">{{ result }}</pre>
+        </div>
         {% endif %}
       </div>
     </div>

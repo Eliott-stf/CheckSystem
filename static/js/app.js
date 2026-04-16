@@ -1,6 +1,6 @@
 //VARIABLES
 let isCommandListVisible = true;
-let commandHistory = JSON.parse(localStorage.getItem("cmdHistory") || []);
+let commandHistory = JSON.parse(localStorage.getItem("cmdHistory") || "[]");
 let historyIndex = -1;
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -92,7 +92,7 @@ function toggleCommandList() {
 function executeCommand(cmd) {
   saveToHistory(cmd);
   document.getElementById("cmdInput").value = cmd;
-  document.getElementById("commandForm").onsubmit();
+  document.getElementById("commandForm").submit();
 }
 
 /**
@@ -188,4 +188,18 @@ function showNotification(message) {
     notif.classList.remove("show");
     setTimeout(() => notif.remove(), 300);
   }, 2000);
+}
+
+function fillPingCommand(){
+  const host = prompt("🌐 Entrez l'hôte à pinguer:\n\n 8.8.8.8 (DNS Google)\n 1.1.1.1 (Cloudflare) ")
+  if(host){
+    executeCommand("ping " + host)
+  }
+}
+
+function fillKillCommand(){
+  const pid = prompt("⚠️ Entrez le PID du processus à arrêter:\n\n(Utilisez 'processus' pour voir la liste)", "");
+  if(pid && !isNaN(pid)){
+    executeCommand("kill " + pid);
+  }
 }
