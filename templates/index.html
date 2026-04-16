@@ -14,9 +14,48 @@
                 <div class="title-section">
                     <h1>Check System </h1>
                     <p class="subtitle">Monitoring et Administration Système</p>
-                </div>            
+                </div> 
+                <div class="quick-stats" id="quick-start">
+                    <div class="stat-item">
+                        <span class="stat-icon">⚙️</span>
+                        <span class="stat-value" id="cpuQuick">--</span>
+                        <span class="stat-label">CPU</span>                    
+                    </div>  
+
+                    <div class="stat-item">
+                        <span class="stat-icon">🧠</span>
+                        <span class="stat-value" id="ramQuick">--</span>
+                        <span class="stat-label">RAM</span>                    
+                    </div>  
+
+                    <div class="stat-item">
+                        <span class="stat-icon">💾</span>
+                        <span class="stat-value" id="diskQuick">--</span>
+                        <span class="stat-label">Disque</span>                    
+                    </div>     
+                </div>           
             </div>
         </header>    
+
+        <div class="view-toggle">
+            <button class="toggle-btn active" onclick="switchView('commands')" id="btnCommands">⌨️ Commandes</button>
+            <button class="toggle-btn" onclick="switchView('live')" id="btnLive">📊 Monitoring Live</button>
+        </div>
+
+        <dix id="liveView" style="display: none">
+            <h2>Live</h2>
+        </dix>
+
+        <dix id="commandsView">
+            <h2>Commands</h2>
+        </dix>        
+
     </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static',filename='js/app.js') }}"></script> 
+
 </body>
 </html>

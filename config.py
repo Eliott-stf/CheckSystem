@@ -11,7 +11,7 @@ class Config:
     PORT = 5000
 
     #Monitoring
-    STAT_REFRESH_INTERVALE = 3 #secondes entre les mise a jour
+    STAT_REFRESH_INTERAL = 3 #secondes entre les mise a jour
     CPU_INTERVAL= 1
     MAX_HISTORY_SIZE = 50
 
