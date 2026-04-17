@@ -1,342 +1,361 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Check System</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>"
-    />
-  </head>
-  <body>
-    <div class="container">
-      <!-- header avec stats en temps réel -->
-      <header>
-        <div class="header-content">
-          <div class="title-section">
-            <h1>🤖 Check System</h1>
-            <p class="subtitle">Monitoring et Administration Système</p>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysAdmin Pro Dashboard - Monitoring Système</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header avec stats en temps réel -->
+    <header>
+      <div class="header-content">
+        <div class="title-section">
+          <h1>🤖 SysAdmin Pro Dashboard</h1>
+          <p class="subtitle">Monitoring et Administration Système</p>
+        </div>
+        <div class="quick-stats" id="quickStats">
+          <div class="stat-item">
+            <span class="stat-icon">⚙️</span>
+            <span class="stat-value" id="cpuQuick">--</span>
+            <span class="stat-label">CPU</span>
           </div>
-          <div class="quick-stats" id="quickStats">
-            <div class="stat-item">
-              <span class="stat-icon">⚙️</span>
-              <span class="stat-value" id="cpuQuick">--</span>
-              <span class="stat-label">CPU</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-icon">🧠</span>
-              <span class="stat-value" id="ramQuick">--</span>
-              <span class="stat-label">RAM</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-icon">💾</span>
-              <span class="stat-value" id="diskQuick">--</span>
-              <span class="stat-label">Disque</span>
-            </div>
+          <div class="stat-item">
+            <span class="stat-icon">🧠</span>
+            <span class="stat-value" id="ramQuick">--</span>
+            <span class="stat-label">RAM</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💾</span>
+            <span class="stat-value" id="diskQuick">--</span>
+            <span class="stat-label">Disque</span>
           </div>
         </div>
-      </header>
-      <!-- Mode toggle -->
-      <div class="view-toggle">
-        <button
-          class="toggle-btn active"
-          onclick="switchView('commands')"
-          id="btnCommands"
-        >
-          ⌨️ Commandes
-        </button>
-        <button class="toggle-btn" onclick="switchView('live')" id="btnLive">
-          📊 Monitoring Live
-        </button>
       </div>
+    </header>
 
-      <!-- Vue Monitoring live -->
-      <div id="liveView" style="display: none">
-        <h2>Live</h2>
-      </div>
+    <!-- Mode toggle -->
+    <div class="view-toggle">
+      <button class="toggle-btn active" onclick="switchView('commands')" id="btnCommands">
+        ⌨️ Commandes
+      </button>
+      <button class="toggle-btn" onclick="switchView('live')" id="btnLive">
+        📊 Monitoring Live
+      </button>
+    </div>
 
-      <!-- Vue Commande -->
-      <div id="commandsView">
-        <!-- Filtre de catégories -->
-        <div class="filter-bar">
-          <button
-            class="filter-btn active"
-            onclick="filterCommands('all', this)"
-          >
-            Toutes
-          </button>
-          <button
-            class="filter-btn"
-            onclick="filterCommands('monitoring', this)"
-          >
-            📊 Monitoring
-          </button>
-          <button class="filter-btn" onclick="filterCommands('network', this)">
-            🌐 Réseau
-          </button>
-          <button class="filter-btn" onclick="filterCommands('process', this)">
-            🔄 Processus
-          </button>
-          <button class="filter-btn" onclick="filterCommands('security', this)">
-            🔒 Sécurité
-          </button>
-          <button
-            class="filter-btn"
-            onclick="filterCommands('diagnostic', this)"
-          >
-            🔍 Diagnostic
-          </button>
-        </div>
-
-        <!-- commande organisées par catégory -->
-        <div class="command-card">
-          <div class="card-title">
-            <span>📋 Commandes Rapides</span>
-            <button class="btn-secondary" onclick="toggleCommandList()">
-              <span id="toggleIcon">▼</span>
+    <!-- Vue Monitoring Live -->
+    <div id="liveView" style="display: none;">
+      <div class="live-monitoring">
+        <div class="monitoring-header">
+          <h2>📊 Monitoring en Temps Réel</h2>
+          <div class="monitoring-controls">
+            <button class="btn-icon" onclick="toggleAutoRefresh()" id="autoRefreshBtn" title="Auto-refresh">
+              ▶️
             </button>
-          </div>
-          <div class="commands-grid" id="commandsGrid">
-            <!-- Monitoring -->
-            <div
-              class="command-item"
-              data-category="monitoring"
-              onclick="executeCommand('cpu')"
-            >
-              <span class="cmd-name">⚙️ cpu</span>
-              <span class="cmd-desc">Utilisation détaillée CPU</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="monitoring"
-              onclick="executeCommand('ram')"
-            >
-              <span class="cmd-name">🧠 ram</span>
-              <span class="cmd-desc">Mémoire RAM complète</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="monitoring"
-              onclick="executeCommand('espace')"
-            >
-              <span class="cmd-name">💾 espace</span>
-              <span class="cmd-desc">Utilisation des disques</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="monitoring"
-              onclick="executeCommand('dashboard')"
-            >
-              <span class="cmd-name">📊 dashboard</span>
-              <span class="cmd-desc">Vue d'ensemble système</span>
-            </div>
-            <!-- Réseau -->
-            <div
-              class="command-item"
-              data-category="network"
-              onclick="fillPingCommand()"
-            >
-              <span class="cmd-name">📡 ping</span>
-              <span class="cmd-desc">Test connectivité réseau</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="network"
-              onclick="executeCommand('network')"
-            >
-              <span class="cmd-name">🌐 network</span>
-              <span class="cmd-desc">Infos & stats réseau</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="network"
-              onclick="executeCommand('ports')"
-            >
-              <span class="cmd-name">🔌 ports</span>
-              <span class="cmd-desc">Ports TCP/UDP actifs</span>
-            </div>
-            <!-- Processus -->
-             <div
-              class="command-item"
-              data-category="process"
-              onclick="executeCommand('processus')"
-            >
-              <span class="cmd-name">🔄 processus</span>
-              <span class="cmd-desc">Top 10 processus</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="process"
-              onclick="executeCommand('services')"
-            >
-              <span class="cmd-name">⚡ services</span>
-              <span class="cmd-desc">Services système actifs</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="process"
-              onclick="fillKillCommand()"
-            >
-              <span class="cmd-name">❌ kill</span>
-              <span class="cmd-desc">Arrêter un processus</span>
-            </div>
-            <!-- Sécurité -->
-             <div
-              class="command-item"
-              data-category="security"
-              onclick="executeCommand('users')"
-            >
-              <span class="cmd-name">👥 users</span>
-              <span class="cmd-desc">Utilisateurs connectés</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="security"
-              onclick="executeCommand('security')"
-            >
-              <span class="cmd-name">🔒 security</span>
-              <span class="cmd-desc">Audit de sécurité</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="security"
-              onclick="executeCommand('logs')"
-            >
-              <span class="cmd-name">📜 logs</span>
-              <span class="cmd-desc">Derniers logs système</span>
-            </div>
-            <!-- diagnostic -->
-             <div
-              class="command-item"
-              data-category="diagnostic"
-              onclick="executeCommand('sysinfo')"
-            >
-              <span class="cmd-name">💻 sysinfo</span>
-              <span class="cmd-desc">Informations système</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="diagnostic"
-              onclick="executeCommand('uptime')"
-            >
-              <span class="cmd-name">🕰️ uptime</span>
-              <span class="cmd-desc">Durée d'activité</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="diagnostic"
-              onclick="executeCommand('temp')"
-            >
-              <span class="cmd-name">🌡️ temp</span>
-              <span class="cmd-desc">Températures</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="diagnostic"
-              onclick="executeCommand('battery')"
-            >
-              <span class="cmd-name">🔋 battery</span>
-              <span class="cmd-desc">Etat batterie</span>
-            </div>
-            <div
-              class="command-item"
-              data-category="diagnostic"
-              onclick="executeCommand('health')"
-            >
-              <span class="cmd-name">❤️ health</span>
-              <span class="cmd-desc">Santé système globale</span>
-            </div>
-            <div
-              class="command-item"
-              onclick="executeCommand('help')"
-            >
-              <span class="cmd-name">❓ help</span>
-              <span class="cmd-desc">Aide & Documentation</span>
-            </div>
-          </div>
-        </div>
-        <!-- console avec historique-->
-        <div class="command-card">
-          <div class="card-title">
-            <span>⌨️ Console de commande</span>
-            <div class="console-actions">
-              <button
-                class="btn-icon"
-                onclick="clearHistory()"
-                title="Effacer l'historique"
-              >
-                🗑️
-              </button>
-              <button
-                class="btn-icon"
-                onclick="exportResults()"
-                title="Exporter les résultats"
-              >
-                💾
-              </button>
-              <button
-                class="btn-icon"
-                onclick="copyLastResult()"
-                title="Copier le dernier résultat"
-              >
-                📋
-              </button>
-            </div>
-          </div>
-          <form method="post" id="commandForm">
-            <div class="input-wrapper">
-              <input
-                type="text"
-                name="cmd"
-                id="cmdInput"
-                placeholder="Tapez une commande ou utilisez les boutons ci-dessus..."
-                value="{{ command }}"
-                autocomplete="off"
-                list="commandHistory"
-              />
-              <datalist id="commandHistory"></datalist>
-            </div>
-            <button type="submit" id="executeBtn">
-              <span id="btnText">Exécuter</span>
-              <span class="shortcut">Ctrl+↵</span>
+            <button class="btn-icon" onclick="resetCharts()" title="Réinitialiser">
+              🔄
             </button>
-          </form>
-          <div class="command-hinds" id="hinds"></div>
+            <select id="refreshInterval" class="refresh-select" onchange="updateRefreshInterval()">
+              <option value="1000">1s</option>
+              <option value="2000" selected>2s</option>
+              <option value="5000">5s</option>
+              <option value="10000">10s</option>
+            </select>
+          </div>
         </div>
-        <!-- Résultat avec timing -->
-        {% if result %}
-        <div class="result-card" id="resultCard">
-          <div class="result-header">
-            <div class="result-title-group">
-              <span class="result-title">📟 {{ command|upper }}</span>
-              <span class="execution-time" id="execTime"></span>
+
+        <!-- Graphiques -->
+        <div class="charts-grid">
+          <!-- CPU Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>⚙️ CPU Usage</h3>
+              <span class="chart-value" id="cpuLiveValue">0%</span>
             </div>
-            <div class="result-actions">
-              <button class="btn-icon" onclick="copyResult()" title="Copiez">
-                📋
-              </button>
-              <button
-                class="btn-icon"
-                onclick="downloadResult()"
-                title="Téléchargez"
-              >
-                💾
-              </button>
-              <span class="status-indicator"></span>
+            <canvas id="cpuChart"></canvas>
+          </div>
+
+          <!-- RAM Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>🧠 RAM Usage</h3>
+              <span class="chart-value" id="ramLiveValue">0%</span>
+            </div>
+            <canvas id="ramChart"></canvas>
+          </div>
+
+          <!-- Disk Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>💾 Disk Usage</h3>
+              <span class="chart-value" id="diskLiveValue">0%</span>
+            </div>
+            <canvas id="diskChart"></canvas>
+          </div>
+
+          <!-- Network Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>🌐 Network I/O</h3>
+              <span class="chart-value" id="networkLiveValue">0 KB/s</span>
+            </div>
+            <canvas id="networkChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Stats détaillées -->
+        <div class="detailed-stats">
+          <div class="stat-card">
+            <h4>💻 Processeur</h4>
+            <div class="stat-details" id="cpuDetails">
+              <div class="stat-line">
+                <span>Fréquence:</span>
+                <span id="cpuFreq">-- GHz</span>
+              </div>
+              <div class="stat-line">
+                <span>Cœurs physiques:</span>
+                <span id="cpuCores">--</span>
+              </div>
+              <div class="stat-line">
+                <span>Cœurs logiques:</span>
+                <span id="cpuThreads">--</span>
+              </div>
             </div>
           </div>
-          <pre id="resultContent">{{ result }}</pre>
+
+          <div class="stat-card">
+            <h4>🧠 Mémoire</h4>
+            <div class="stat-details" id="ramDetails">
+              <div class="stat-line">
+                <span>Total:</span>
+                <span id="ramTotal">-- GB</span>
+              </div>
+              <div class="stat-line">
+                <span>Utilisée:</span>
+                <span id="ramUsed">-- GB</span>
+              </div>
+              <div class="stat-line">
+                <span>Disponible:</span>
+                <span id="ramAvailable">-- GB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>💾 Disque</h4>
+            <div class="stat-details" id="diskDetails">
+              <div class="stat-line">
+                <span>Total:</span>
+                <span id="diskTotal">-- GB</span>
+              </div>
+              <div class="stat-line">
+                <span>Utilisé:</span>
+                <span id="diskUsed">-- GB</span>
+              </div>
+              <div class="stat-line">
+                <span>Libre:</span>
+                <span id="diskFree">-- GB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <h4>🌐 Réseau</h4>
+            <div class="stat-details" id="networkDetails">
+              <div class="stat-line">
+                <span>Envoyé:</span>
+                <span id="netSent">-- MB</span>
+              </div>
+              <div class="stat-line">
+                <span>Reçu:</span>
+                <span id="netRecv">-- MB</span>
+              </div>
+              <div class="stat-line">
+                <span>Vitesse:</span>
+                <span id="netSpeed">-- KB/s</span>
+              </div>
+            </div>
+          </div>
         </div>
-        {% endif %}
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Vue Commandes (existante) -->
+    <div id="commandsView">
+      <!-- Filtres de catégories -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterCommands('all', this)">Toutes</button>
+        <button class="filter-btn" onclick="filterCommands('monitoring', this)">📊 Monitoring</button>
+        <button class="filter-btn" onclick="filterCommands('network', this)">🌐 Réseau</button>
+        <button class="filter-btn" onclick="filterCommands('process', this)">🔄 Processus</button>
+        <button class="filter-btn" onclick="filterCommands('security', this)">🔒 Sécurité</button>
+        <button class="filter-btn" onclick="filterCommands('diagnostic', this)">🔍 Diagnostic</button>
+      </div>
+
+      <!-- Commandes organisées par catégorie -->
+      <div class="command-card">
+        <div class="card-title">
+          <span>📋 Commandes Rapides</span>
+          <button class="btn-secondary" onclick="toggleCommandList()">
+            <span id="toggleIcon">▼</span>
+          </button>
+        </div>
+        <div class="commands-grid" id="commandsGrid">
+          <!-- Monitoring -->
+          <div class="command-item" data-category="monitoring" onclick="executeCommand('cpu')">
+            <span class="cmd-name">⚙️ cpu</span>
+            <span class="cmd-desc">Utilisation détaillée CPU</span>
+          </div>
+          <div class="command-item" data-category="monitoring" onclick="executeCommand('ram')">
+            <span class="cmd-name">🧠 ram</span>
+            <span class="cmd-desc">Mémoire RAM complète</span>
+          </div>
+          <div class="command-item" data-category="monitoring" onclick="executeCommand('espace')">
+            <span class="cmd-name">💾 espace</span>
+            <span class="cmd-desc">Utilisation des disques</span>
+          </div>
+          <div class="command-item" data-category="monitoring" onclick="executeCommand('dashboard')">
+            <span class="cmd-name">📊 dashboard</span>
+            <span class="cmd-desc">Vue d'ensemble système</span>
+          </div>
+
+          <!-- Réseau -->
+          <div class="command-item" data-category="network" onclick="fillPingCommand()">
+            <span class="cmd-name">📡 ping</span>
+            <span class="cmd-desc">Test connectivité réseau</span>
+          </div>
+          <div class="command-item" data-category="network" onclick="executeCommand('network')">
+            <span class="cmd-name">🌐 network</span>
+            <span class="cmd-desc">Infos & stats réseau</span>
+          </div>
+          <div class="command-item" data-category="network" onclick="executeCommand('ports')">
+            <span class="cmd-name">🔌 ports</span>
+            <span class="cmd-desc">Ports TCP/UDP actifs</span>
+          </div>
+
+          <!-- Processus -->
+          <div class="command-item" data-category="process" onclick="executeCommand('processus')">
+            <span class="cmd-name">🔄 processus</span>
+            <span class="cmd-desc">Top 10 processus</span>
+          </div>
+          <div class="command-item" data-category="process" onclick="executeCommand('services')">
+            <span class="cmd-name">⚡ services</span>
+            <span class="cmd-desc">Services système actifs</span>
+          </div>
+          <div class="command-item" data-category="process" onclick="fillKillCommand()">
+            <span class="cmd-name">❌ kill</span>
+            <span class="cmd-desc">Arrêter un processus</span>
+          </div>
+
+          <!-- Sécurité -->
+          <div class="command-item" data-category="security" onclick="executeCommand('users')">
+            <span class="cmd-name">👥 users</span>
+            <span class="cmd-desc">Utilisateurs connectés</span>
+          </div>
+          <div class="command-item" data-category="security" onclick="executeCommand('security')">
+            <span class="cmd-name">🔒 security</span>
+            <span class="cmd-desc">Audit de sécurité</span>
+          </div>
+          <div class="command-item" data-category="security" onclick="executeCommand('logs')">
+            <span class="cmd-name">📜 logs</span>
+            <span class="cmd-desc">Derniers logs système</span>
+          </div>
+
+          <!-- Diagnostic -->
+          <div class="command-item" data-category="diagnostic" onclick="executeCommand('sysinfo')">
+            <span class="cmd-name">💻 sysinfo</span>
+            <span class="cmd-desc">Informations système</span>
+          </div>
+          <div class="command-item" data-category="diagnostic" onclick="executeCommand('uptime')">
+            <span class="cmd-name">🕰️ uptime</span>
+            <span class="cmd-desc">Durée d'activité</span>
+          </div>
+          <div class="command-item" data-category="diagnostic" onclick="executeCommand('temp')">
+            <span class="cmd-name">🌡️ temp</span>
+            <span class="cmd-desc">Températures</span>
+          </div>
+          <div class="command-item" data-category="diagnostic" onclick="executeCommand('battery')">
+            <span class="cmd-name">🔋 battery</span>
+            <span class="cmd-desc">État batterie</span>
+          </div>
+          <div class="command-item" data-category="diagnostic" onclick="executeCommand('health')">
+            <span class="cmd-name">❤️ health</span>
+            <span class="cmd-desc">Santé système globale</span>
+          </div>
+
+          <div class="command-item" onclick="executeCommand('help')">
+            <span class="cmd-name">❓ help</span>
+            <span class="cmd-desc">Aide & documentation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Console avec historique -->
+      <div class="command-card">
+        <div class="card-title">
+          <span>⌨️ Console de Commande</span>
+          <div class="console-actions">
+            <button class="btn-icon" onclick="clearHistory()" title="Effacer l'historique">🗑️</button>
+            <button class="btn-icon" onclick="exportResults()" title="Exporter les résultats">💾</button>
+            <button class="btn-icon" onclick="copyLastResult()" title="Copier le dernier résultat">📋</button>
+          </div>
+        </div>
+        <form method="post" id="commandForm">
+          <div class="input-wrapper">
+            <input type="text" name="cmd" id="cmdInput"
+              placeholder="Tapez une commande ou utilisez les boutons ci-dessus..." value="{{ command }}"
+              autocomplete="off" list="commandHistory">
+            <datalist id="commandHistory"></datalist>
+          </div>
+          <button type="submit" id="executeBtn">
+            <span id="btnText">Exécuter</span>
+            <span class="shortcut">Ctrl+↵</span>
+          </button>
+        </form>
+        <div class="command-hints" id="hinds"></div>
+      </div>
+
+      <!-- Résultats avec timing -->
+      {% if result %}
+      <div class="result-card" id="resultCard">
+        <div class="result-header">
+          <div class="result-title-group">
+            <span class="result-title">📟 {{ command|upper }}</span>
+            <span class="execution-time" id="execTime"></span>
+          </div>
+          <div class="result-actions">
+            <button class="btn-icon" onclick="copyResult()" title="Copier">📋</button>
+            <button class="btn-icon" onclick="downloadResult()" title="Télécharger">💾</button>
+            <span class="status-indicator"></span>
+          </div>
+        </div>
+        <pre id="resultContent">{{ result }}</pre>
+      </div>
+      {% endif %}
+
+      <!-- Footer avec infos -->
+      <footer class="app-footer">
+        <div class="footer-content">
+          <span>🤖 SysAdmin Pro v2.0</span>
+          <span>|</span>
+          <span id="systemTime"></span>
+          <span>|</span>
+          <span>Raccourcis: <kbd>Ctrl+Enter</kbd> Exécuter • <kbd>Ctrl+K</kbd> Effacer • <kbd>↑↓</kbd> Historique</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-  </body>
+
+</body>
+
 </html>
